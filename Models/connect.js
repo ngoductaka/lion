@@ -70,7 +70,7 @@ let articlesSchema = mongoose.Schema({
         default: Date.now
     },
     favorited:{
-        type: String,
+        type: Boolean,
         default: false
     },
     favoritesCount:{

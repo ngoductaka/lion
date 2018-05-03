@@ -136,17 +136,36 @@ router.post('/articles/:slug/comments', require('../middlewares/auth.js'), async
 // 3.4.12 Get Comments from an Article
 // GET /api/articles/:slug/comments
 router.get('/articles/:slug/comments',  async (req, res) => {
-    console.log(1)
     const comments = await Comments.get(req.params.slug)
-    console.log(12)
-    console.log(comments)
     res.json(comments)
 })
 // 3.4.13 Delete Comment
 // DELETE /api/articles/:slug/comments/:id
 
 router.delete('/articles/:slug/comments/:id',  async (req, res) => {
-    const comments = await Comments.delete(req.params.slug, req.params.id) 
+    const comments = await Comments.remove(req.params.slug, req.params.id) 
     res.json(comments)
 })
+
+// 3.4.14 Favorite Article
+// POST /api/articles/:slug/favorite
+router.post('/articles/:slug/favorite',  async (req, res) => {
+    const articles = await Articles.favorite(req.params.slug)
+    res.json(articles)
+})
+
+// 3.4.15 Unfavorite Article
+// DELETE /api/articles/:slug/favorite
+router.delete('/articles/:slug/favorite',  async (req, res) => {
+    const articles = await Articles.Unfavorite(req.params.slug)
+    res.json(articles)
+})
+
+// 3.4.16 Get Tags
+// GET /api/tags
+router.get('/tags',  async (req, res) => {
+    const articles = await Articles.getTag()
+    res.json(articles)
+})
+
 module.exports = { router }

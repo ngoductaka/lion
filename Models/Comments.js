@@ -29,11 +29,17 @@ async function get (slu ) {
     return {"comments": result }
 
 
+}   
+
+async function remove (slu ,id) {
+    // console.log(slu, id )
+    return await Comments.where({"_id":id}).findOneAndRemove()
+    .select('_id body createdAt updatedAt  author')
+    .populate({
+        path: 'author',
+    })
+    .exec()
+
 }
 
-async function get (slu ,id) {
-    
-
-}
-
-module.exports = { get} 
+module.exports = { get, remove } 

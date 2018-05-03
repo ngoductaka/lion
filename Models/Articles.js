@@ -14,6 +14,7 @@ async function get({ tag = null, author = null, favorited = null, limit = 20, of
     let ta = tag ? { 'tagList': { $in: [tag] } } : {}
     let fa = favorited ? { "favorited": favorited } : {}
     let query = { ...au, ...ta, ...fa, ...fe }
+    // console.log(query)
     let articles = await Articles.find(query).skip(offset).limit(limit)
         .select('slug title description body tagList createdAt updatedAt favorited favoritesCount author')
         .populate({
@@ -113,4 +114,45 @@ async function addComment (comment, slu, id) {
         "comment":commentSend
     }
 }
-module.exports = { get, slug, save, update, remove, addComment} 
+
+
+async function favorite (slu) {
+    let up = await Articles.where( {"slug": slu}).update({ $set: {"favorited": true}}) 
+    // return up
+    if (1===up.n){
+        article = await slug(slu)
+        let Count =  article.article[0].favoritesCount;
+        let upCount = await Articles.where( {"slug": slu}).update({ $set: {"favoritesCount": ++Count}}) 
+        return await slug(slu);
+    }
+}
+
+async function Unfavorite (slu) {
+    let up = await Articles.where( {"slug": slu}).update({ $set: {"favorited": false}})
+    // return up
+    if (1===up.n){
+        article = await slug(slu)
+        let Count =  article.article[0].favoritesCount;
+        let upCount = await Articles.where( {"slug": slu}).update({ $set: {"favoritesCount": --Count}})
+        return await slug(slu);
+    }
+}
+
+async function getTag() {
+    // console.log(1)
+    let tags =  await Articles.find({})
+    .select('tagList')
+    let List = []
+    tags.forEach(e=>{
+        List.push(...e.tagList)
+        // console.log(e.tagList)
+    })
+    let dnd = new Set()
+    List.forEach(e=>{
+        dnd.add(e);
+    })
+    // dnd.add
+    return [...dnd]
+
+}
+module.exports = { get, slug, save, update, remove, addComment, favorite, Unfavorite, getTag} 
